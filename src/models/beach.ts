@@ -10,7 +10,7 @@ export enum BeachPosition {
 export interface Beach {
     _id?: string;
     name: string;
-    position: { type: string, enum: ['S', 'E', 'W', 'N'], required: true }
+    position: BeachPosition
     lat: number;
     lng: number;
 }
