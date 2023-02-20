@@ -63,16 +63,14 @@ export class StormGlass {
     'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
   readonly stormGlassAPISource = 'noaa';
 
-  constructor(protected request = new HTTPUtil.Request()) {}
+  constructor(protected request = new HTTPUtil.Request()) { }
 
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {
       const response = await this.request.get<StormGlassForecastResponse>(
         `${stormglassResourceConfig.get(
           'apiUrl'
-        )}/weather/point?lat=${lat}&lng=${lng}&params=${
-          this.stormGlassAPIParams
-        }&source=${this.stormGlassAPISource}`,
+        )}/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`,
         {
           headers: {
             Authorization: stormglassResourceConfig.get('apiToken'),
@@ -81,8 +79,6 @@ export class StormGlass {
       );
       return this.normalizeResponse(response.data);
     } catch (err) {
-      //@Updated 2022 to support Error as unknown
-      //https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
       if (err instanceof Error && HTTPUtil.Request.isRequestError(err)) {
         const error = HTTPUtil.Request.extractErrorData(err);
         throw new StormGlassResponseError(
